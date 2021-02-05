@@ -10,6 +10,7 @@ import logging
 import pandas
 from flask import request, make_response, jsonify
 from flask_restful import Resource
+from werkzeug.exceptions import NotFound
 
 # Local imports
 from dinopark_status_api.constants import LOGGER
