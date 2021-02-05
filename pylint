@@ -1,0 +1,2 @@
+#!/bin/bash
+pylint dinopark_status_api --rcfile=.pylintrc -f text
