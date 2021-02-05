@@ -1,17 +1,17 @@
 """
-A simple web service for the Dino Park Dinosaur Status API.
+A REST API for Dino Park zone status.
 
 """
 
-from flask import Flask
+# System imports
+import logging
 
-server = Flask(__name__)
-
-
-@server.route("/")
-def hello():
-    return "Hello World!"
+# Local imports
+from dinopark_status_api.constants import API_VERSION, LOGGER
 
 
-if __name__ == "__main__":
-    server.run(host='0.0.0.0')
+# Setup logging
+logger = logging.getLogger(LOGGER)
+logger.info(f"Starting DinoPark Status API {API_VERSION}")
+
+# Setup App

@@ -1,6 +1,8 @@
 Flask==1.1.1
+Flask-RESTful==0.3.8
 pandas==1.0.1
 pycodestyle~=2.4.0
 pylint==2.5.3
 Werkzeug==1.0.0
 gunicorn==19.9.0
+mockito==1.2.1
