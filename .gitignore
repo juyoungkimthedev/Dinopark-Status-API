@@ -1,0 +1,23 @@
+# Created by .ignore support plugin (hsz.mobi)
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pytest_cache/
+*.py[cod]
+.idea/*
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# PyCharm
+workspace.xml
+.idea/
+
+# Development
+log/
+my-project/
+*.log
+
+# Documentation
+README.html
+doc/build
