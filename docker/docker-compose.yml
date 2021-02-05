@@ -1,0 +1,26 @@
+version: "3.5"
+services:
+ treatments_model_master_api:
+   container_name: 'treatments_model_master_api'
+   build:
+     context: ..
+     dockerfile: ./docker/Dockerfile
+   volumes:
+     - ../:/project
+   environment:
+     - PKG_NAME=praelexis_treatments_model_master_api
+     - DEBUG=True
+     - TESTING=True
+     - LOG_LEVEL=DEBUG
+     - ENVIRONMENT=TEST
+     - TENANT_ID=c6feeb67-9372-4e81-93fa-90e0e53ae913
+     - AD_GROUP_ID=037708c6-c0ad-484d-af9b-087f3699831a
+     - DB_NAME=treatments_model_db
+     - DB_TARGET_DATA_COLLECTION_NAME=treatments_model_result
+     - DB_SOURCE_DATA_COLLECTION_NAME=treatments_model_source_data
+     - COSMOS_SQL_BASE_URL
+     - COSMOS_SQL_MASTER_KEY
+     - FULL_CATCH_UP_API=treatments-model-full-catch-up-api
+     - PARTIAL_PAYMENTS_API=treatments-model-partial-payments-api
+     - SPINNING_RESCHEDULE_API=treatments-model-spinning-reschedule-api
+     - VARIABLE_RESCHEDULE_API=treatments-model-variable-reschedule-api

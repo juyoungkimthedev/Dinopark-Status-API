@@ -1,0 +1,236 @@
+swagger: "2.0"
+info:
+  title: Capitec Treatments Model Master API
+  description: The Capitec Best Treatments service via a REST API.
+  version: "0.0.3"
+schemes:
+  - http
+basePath: /treatments_model/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+
+securityDefinitions:
+  OAuth2:
+    type: oauth2
+    tokenUrl: https://login.microsoftonline.com/a428b46f-c29b-4a6c-85f1-8e05c10b6671/oauth2/v2.0/token
+    flow: password
+    description: "The OAuth endpoint should be used to retrieve valid JWT tokens"
+paths:
+  /:
+    get:
+      summary: Home Call.
+      description: This endpoint returns a welcome message. Can be used to check the health status.
+      tags:
+        - Treatments Model Master API
+      responses:
+        200:
+          description: Successful Call.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Welcome to the Capitec Treatments Model Master API!"
+        401:
+          description: Unauthorized request, often related to missing subscription keys.
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: Route not found. Usually indicates an invalid url.
+          schema:
+            $ref: "#/definitions/ApiError"
+  /best_treatments/:
+    post:
+      summary: Make best treatments recommendation for a client.
+      description: This endpoint returns four best treatment options with related information for a given client.
+      parameters:
+        - name: input_data
+          in: body
+          required: true
+          description: "The client data for treatment models and instalment recalculations"
+          schema:
+            $ref: "#/definitions/ClientData"
+      tags:
+         - Treatments Model Master API
+      responses:
+        200:
+          description: Successful Call. Four treatment results will be returned inside "treatments" list for a single client call. The example value shows a single treatment result. Each treatment gets its position i.e. treatment_option_1/2/3/4. 1 -> Full Catch Up; 2 -> Partial Payments; 3 -> Spinning Reschedule; 4 -> Variable Reschedule
+          schema:
+            $ref: "#/definitions/BestTreatments"
+        400:
+          description: Required parameters not in request. Usually indicates that the request body is empty or missing right input data.
+          schema:
+            $ref: "#/definitions/ApiError"
+        401:
+          description: Unauthorized request, often related to expired tokens or missing subscription keys.
+          schema:
+            $ref: '#/definitions/ApiError'
+        404:
+          description: Route not found. Usually indicates an invalid url.
+          schema:
+            $ref: '#/definitions/ApiError'
+        405:
+          description: Unsupported operation. Usually indicates that the requested method is not allowed.
+          schema:
+            $ref: '#/definitions/ApiError'
+        500:
+          description: Internal Server Error. Usually indicates that unknown error has occured. Possible reason is provided.
+          schema:
+            $ref: '#/definitions/ApiError'
+        503:
+          description: Service Unavailable. Usually indicates that an external dependency failed i.e. model APIs failed.
+          schema:
+            $ref: '#/definitions/ApiError'
+      security:
+      - OAuth2 : []
+
+definitions:
+  ApiError:
+    type: object
+    properties:
+      message:
+        type: string
+
+  ClientData:
+    type: object
+    properties:
+      AccountNumber:
+        description: "Client identifier"
+        type: string
+      LogicalRecordID:
+        description: "Logical record ID"
+        type: integer
+      input_data:
+        description: "Input client source data"
+        type: object
+        properties:
+          AllNumEverTrades:
+            type: integer
+          ALLNumOpenSatisfTradesGE12M:
+            type: integer
+          ALLNumOpenSatisfTrades:
+            type: integer
+          ALLNumTrades180Days:
+            type: integer
+          ALLPercSatisfToOpenTrades:
+            type: integer
+          ALLPercUtilisation:
+            type: integer
+          ALLValCurMthInstalm30Days:
+            type: number
+          ALLValODBal1Year:
+            type: number
+          APLNumEverTrades:
+            type: integer
+          CTelephones:
+            type: integer
+          CPA_COMPUSCORE_A:
+            type: integer
+          CPANum0Delq1Year:
+            type: integer
+          CPANumOpenSatisfTradesGE12M:
+            type: integer
+          CPATimeMRTrade:
+            type: integer
+          CPATimeOldestTrade:
+            type: integer
+          GrossSalary:
+            type: number
+          OutstandBalance:
+            type: number
+          MonthlyCPAInstalmentOther:
+            type: number
+          MonthlyNLRInstalmentOther:
+            type: number
+          NLR_COMPUSCORE_A:
+            type: integer
+          NLRTimeMRTrade:
+            type: integer
+          OTHTimeOldestTrade:
+            type: integer
+          SCORE_MI:
+            type: integer
+          SCORE_TM:
+            type: integer
+          UNSPercPayments2Years:
+            type: integer
+          UNSTimeOldestTrade:
+            type: integer
+          UNSValCurMthInstalm30Days:
+            type: number
+          UNSValCurMthInstalmMR60Days:
+            type: number
+          NLRHighestNumberOfArrearsL12M:
+            type: string
+          RescheduleMaxTerm:
+            type: integer
+          ReschMaxInstall:
+            type: number
+          ReschVariableMaxTerm: # Not used but kept for future.
+            type: integer
+          ReschCatchUpMaxTerm:
+            type: integer
+          MinCatchUpInstallAllowed:
+            type: number
+          PartialPaymentMaxTerm:
+            type: integer
+          MinPartialPaymentAmount:
+            type: array
+            items:
+              type: number
+            example: [10.5, 20.5, 30.5]
+            maxItems: 3
+          DisabilityRate:
+            type: number
+          RetrenchmentRate:
+            type: number
+          DeathRate:
+            type: number
+          SalaryFrequency:
+            type: string
+          InterestRate:
+            type: number
+          OutstandInstall: # Not used but kept for future.
+            type: number
+          LoanArrearsAmount:
+            type: number
+          APRemainingRepays:
+            type: integer
+          LoanOriginaInstallment:
+            type: number
+          OriginalLoanTerm:
+            type: integer
+          ServiceFee:
+            type: number
+          AdvanceDate:
+            type: string
+
+  BestTreatments:
+    type: object
+    properties:
+      account_number:
+        type: string
+      logical_record_id:
+        type: string
+      treatments:
+        type: array
+        items:
+          type: object
+          properties:
+            treatment_option_1:
+              description: "Position of the treatment"
+              type: integer
+            treatment_rank_1:
+              description: "Rank of the treatment"
+              type: integer
+            treatment_suggested_instalment_1:
+              description: "Instalment amount"
+              type: number
+            treatment_term_1:
+              description: "Instalment terms"
+              type: integer
+            treatment_pred_yield_1:
+              description: "Model predicted yield"
+              type: number
