@@ -1,0 +1,11 @@
+version: "3.5"
+services:
+ dinopark_status_api:
+   container_name: 'dinopark_status_api'
+   build:
+     context: ""
+     dockerfile: ../Dockerfile
+   volumes:
+     - ../:/project
+   environment:
+     - DEBUG=True
