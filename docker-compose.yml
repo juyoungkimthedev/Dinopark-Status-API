@@ -4,8 +4,8 @@ services:
    container_name: 'dinopark_status_api'
    build:
      context: ""
-     dockerfile: ../Dockerfile
+     dockerfile: Dockerfile
    volumes:
-     - ../:/project
-   environment:
-     - DEBUG=True
+     - ./:/project
+   ports:
+     - 5001:80

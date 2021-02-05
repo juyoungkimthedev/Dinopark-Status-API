@@ -27,7 +27,8 @@ class Health(Resource):
         return make_response(jsonify({
             "status": {
                 "code": 200,
-                "status": "SUCCESS"
+                "info": "Welcome to Dino Park Status API!",
+                "status": "SUCCESS",
             }
         }))
 
@@ -54,4 +55,4 @@ class Status(Resource):
         }
         self.logger.info(f"Processed request for zone: {zone}")
 
-        return make_response(jsonify({result}))
+        return make_response(jsonify(result))
