@@ -85,3 +85,12 @@ you can run, debug and test the app in an isolated environment right from the ID
 useful link: https://www.jetbrains.com/help/ruby/using-docker-compose-as-a-remote-interpreter.html
 
 Just in case you can't run test on your own machine, here are screenshots of successful tests:
+
+------
+
+### Things to do differently?
+
+- Use production ready WSGI HTTP server such as Gunicorn.
+Currently the project uses Flask's default web server which is not suitable for production level.
+
+- Database choice. Cloud hosted DB.

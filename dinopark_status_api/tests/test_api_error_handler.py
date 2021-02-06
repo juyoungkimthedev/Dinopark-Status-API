@@ -2,63 +2,31 @@
 Tests the API.
 """
 
-# pylint: disable=invalid-name
-# pylint: disable=unused-argument
-
 # System imports
 import os
 import json
 import unittest
 
 # Third-party import
-import adal
 from mockito import mock
+from pymongo import MongoClient
+
+# Local imports
+from dinopark_status_api.apis import DinoparkStatusApi
 
 
 class TestAppErrorHandler(unittest.TestCase):
     """
     Tests for the API application's endpoints.
     """
-
-    @classmethod
-    def get_token_dict(cls, tenant_id, app_id, client_key):
-        """
-        Helper to generate a token dictionary (from which one can extract a token)
-
-        :param tenant_id: The tenant ID (always the same for a Tenant, such as Capitec for example).
-        :param app_id: The ID of the specific APP (different for different environments such as DEV, INT etc).
-        :param client_key: The client's secret.
-        :return: Token dictionary which includes the token.
-        """
-        # Retrieve valid AD token context
-        context = adal.AuthenticationContext(
-            'https://login.microsoftonline.com/' + tenant_id,
-            validate_authority=tenant_id != 'adfs',
-            api_version=None)
-
-        # Acquire token with correct client credentials
-        token_dict = context.acquire_token_with_client_credentials(
-            resource=app_id,
-            client_id=app_id,
-            client_secret=client_key)
-
-        return token_dict
-
     def setUp(self):
         """
         Setup a test app.
         """
         # Setup test client
-        mock_dal = mock(CosmosSqlConnector, strict=False)
-        app = TreatmentsModelApi.create_app(data_access_layer=mock_dal, config_object=Config)
+        mock_dal = mock(MongoClient, strict=False)
+        app = DinoparkStatusApi.create_app(mock_dal)
         self.app = app.test_client()
-
-        # Retrieve OAuth token
-        token_dict = self.get_token_dict(tenant_id=TEST_TENANT_ID, app_id=TEST_APPLICATION_ID, client_key=TEST_CLIENT_KEY)
-        token = token_dict['accessToken']
-
-        # Header
-        self.header = {'Authorization': 'Bearer {}'.format(token)}
 
         # Setup test data path
         self.directory_path = os.path.dirname(__file__)
