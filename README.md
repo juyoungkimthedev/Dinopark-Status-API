@@ -48,8 +48,8 @@ Stop existing running docker container:
 
 ### Data Access Layer choice - MongoDB (NoSQL)
 
-Run MongoDB docker container from official MongoDB image.
-This is for a test purpose.
+In this project I'm running MongoDB docker container from official MongoDB image.
+This is for a test purpose. See: https://hub.docker.com/_/mongo
 
 useful MongoDB commands:
 
