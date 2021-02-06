@@ -33,7 +33,7 @@ paths:
       summary: The status of zone based on a unique zone identifier.
       description: This endpoint returns status of a zone.
       parameters:
-        - name: zone_number
+        - name: zone
           in: query
           type: string
           required: true

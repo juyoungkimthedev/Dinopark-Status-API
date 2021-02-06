@@ -6,3 +6,5 @@ pylint==2.5.3
 Werkzeug==1.0.0
 gunicorn==19.9.0
 mockito==1.2.1
+pymongo==3.11.3
+requests==2.25.1

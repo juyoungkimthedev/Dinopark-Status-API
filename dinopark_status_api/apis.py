@@ -10,7 +10,7 @@ from flask import Flask, jsonify
 from flask_restful import Api
 
 # Local imports
-from dinopark_status_api.constants import LOGGER, API_VERSION
+from dinopark_status_api.constants import LOGGER, API_VERSION, DATABASE_NAME, COLLECTION_NAME
 from dinopark_status_api.resources import Health, Status
 
 
@@ -49,9 +49,11 @@ class DinoparkStatusApi(Api):
         }))
 
     @staticmethod
-    def create_app():
+    def create_app(data_access_layer):
         """
         Creates a new API instance.
+        :param data_access_layer: The data access layer for connecting to MongoDB.
+        :return A Flask app instance.
         """
         logger = logging.getLogger(LOGGER)
 
@@ -60,6 +62,10 @@ class DinoparkStatusApi(Api):
 
         # Base path
         base_path = "/park_zone/" + API_VERSION
+
+        # Create Mongo database and collection
+        database = data_access_layer[DATABASE_NAME]
+        collection = database[COLLECTION_NAME]
 
         @app.after_request
         def after_request(response):
@@ -77,14 +83,23 @@ class DinoparkStatusApi(Api):
                 }
 
                 logger.info(log_statement)
-                return response
+
+            return response
 
         # Instantiate main API class within Api. This is possible as information to create object of a class
         # is already known at the point when one of its methods is called in app.py
         api = DinoparkStatusApi(app, prefix=base_path)
 
         # Routes
-        api.add_resource(Health, "/", endpoint="health")
-        api.add_resource(Status, "/status/", "/status", endpoint="status", strict_slashes=False)
+        api.add_resource(Health,
+                         "/",
+                         endpoint="health")
+
+        api.add_resource(Status,
+                         "/status/",
+                         "/status",
+                         endpoint="status",
+                         resource_class_kwargs={"collection": collection},  # kwargs to send to constructor of resource class
+                         strict_slashes=False)
 
         return app
