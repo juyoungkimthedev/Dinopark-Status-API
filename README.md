@@ -69,3 +69,12 @@ In the project root, run `./pycodestyle` and `./pylint`. This will run `pycodest
 and `pylint` binary files and return scores.
 
 
+------
+
+### Running test
+
+- I have used `docker-compose` as a remote interpreter in PyCharm IDE, this means 
+you can run, debug and test the app in an isolated environment right from the IDE.
+useful link: https://www.jetbrains.com/help/ruby/using-docker-compose-as-a-remote-interpreter.html
+
+Just in case you can't run test on your own machine, here are screenshots of successful tests:
