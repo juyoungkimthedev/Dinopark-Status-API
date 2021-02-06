@@ -15,12 +15,12 @@ from dinopark_status_api.apis import DinoparkStatusApi
 
 class TestDinoparkStatusApi(unittest.TestCase):
     """
-    Tests API's main functions.
+    Tests main functions of the API.
     """
     @classmethod
     def setUpClass(cls):
         """
-        Setup a test app.
+        A class method to setup a test app and mongodb.
         """
         # Setup test client and mongodb
         # We're testing using docker-compose remote interpreter so we can use same mongodb instance
@@ -28,6 +28,18 @@ class TestDinoparkStatusApi(unittest.TestCase):
         mongo_dal = pymongo.MongoClient(mongo_url)
         app = DinoparkStatusApi.create_app(mongo_dal)
         cls.app = app.test_client()
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        A class method called after tests in an individual class have run. This is to drop or delete collection entries after running test.
+        """
+        # list existing databases
+        for database in cls.mongo_dal.list_databases():
+            print(database)
+
+        # delete existing collection and the entries inside.
+        pass
 
     def test_health_endpoint(self):
         """
