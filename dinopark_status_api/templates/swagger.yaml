@@ -5,7 +5,7 @@ info:
   version: "0.0.1"
 schemes:
   - http
-basePath: /park_zone/v1
+basePath: /dinopark_status/v1
 produces:
   - application/json
 paths:

@@ -61,7 +61,7 @@ class DinoparkStatusApi(Api):
         app = Flask(__name__)
 
         # Base path
-        base_path = "/park_zone/" + API_VERSION
+        base_path = "/dinopark_status/" + API_VERSION
 
         # Create Mongo database and collection
         database = data_access_layer[DATABASE_NAME]
