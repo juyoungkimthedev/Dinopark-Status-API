@@ -2,9 +2,13 @@
 REST API to expose Dinopark dinosaur status. The project runs on a docker container
 and it is important to have Docker and Docker-Compose installed on your machine to run the app.
 
+---------
+## How to setup and run the app
+
+- 
+
 Docker installation: https://docs.docker.com/get-docker/
 Docker compose installation: https://docs.docker.com/compose/install/
-
 
 ### Useful Docker commands:
 
@@ -33,6 +37,7 @@ Exec into docker container:
 Stop existing running docker container:
 - `docker rm -f <docker_container_id>`
 
+-------
 
 ### Data Access Layer choice - MongoDB (NoSQL)
 
@@ -53,3 +58,14 @@ To see database and collection inside the mongo container shell
 - `db.stats`
 - `db.<collection_name>.find().pretty()` - show all the entries
 - `db.<collection_name>.remove({})` - to delete all documents
+
+
+------
+
+### Code style checker and static analysis
+
+Code style and static analysis can be done using `pycodestyle` and `pylint`
+In the project root, run `./pycodestyle` and `./pylint`. This will run `pycodestyle`
+and `pylint` binary files and return scores.
+
+
