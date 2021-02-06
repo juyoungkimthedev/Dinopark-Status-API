@@ -58,8 +58,8 @@ class Status(Resource):
 
         # Parse arguments
         args = self._parser.parse_args()
-        req_body = dict(args)
-        zone = req_body["zone"]
+        query = dict(args)
+        zone = query["zone"]
 
         # Retrieve records from NUDLS monitoring system
         resp = requests.get(NUDLS_URL)
