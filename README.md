@@ -38,3 +38,18 @@ Stop existing running docker container:
 
 Run MongoDB docker container from official MongoDB image.
 This is for a test purpose.
+
+useful MongoDB commands:
+
+To see data entries inside MongoDB instance created from docker
+- `docker exec -it <mongo_db_instance_name> bash`
+
+To see database and collection inside the mongo container shell
+- `mongo`
+- `show dbs`
+- `use <database_name>`
+- `show collections`
+- `use <collection_name>`
+- `db.stats`
+- `db.<collection_name>.find().pretty()` - show all the entries
+- `db.<collection_name>.remove({})` - to delete all documents
