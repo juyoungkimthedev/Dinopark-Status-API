@@ -12,11 +12,18 @@ Docker compose installation: https://docs.docker.com/compose/install/
 
 ### Useful Docker commands:
 
-#### docker command: 
+#### docker command for Dockerfile: 
 
+Build docker image from the Dockerfile
 - `docker build -f ./Dockerfile .`
-- `docker run -d -p 8080:80 dinoparkapi`
-- `curl http://localhost:80`
+
+Run docker container with ports
+- `docker run -d -p 5001:80 dinoparkapi`
+
+Hit the endpoint
+- `curl http://localhost:5001`
+
+How to remove running docker container gracefully
 - `docker rm -f <container_id>` 
 
 
