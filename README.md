@@ -94,3 +94,6 @@ Just in case you can't run test on your own machine, here are screenshots of suc
 Currently the project uses Flask's default web server which is not suitable for production level.
 
 - Database choice. Cloud hosted DB.
+
+- I would create MongoDataAccessLayer class interface with methods. Didn't want to make the project too complex.
+Creating a Mongo DAL class interface would make mocking and testing a lot eaiser. 
