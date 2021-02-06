@@ -50,3 +50,17 @@ class TestDinoparkStatusApi(unittest.TestCase):
             response_json = response.get_json()
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response_json, {"status": {"code": 200, "info": "Welcome to Dino Park Status API!", "status": "SUCCESS"}})
+
+    def test_maintenance_status(self):
+        """
+        Test the health endpoint works.
+        """
+        with self.app as client:
+            pass
+
+    def test_safety_status(self):
+        """
+        Test the health endpoint works.
+        """
+        with self.app as client:
+            pass
