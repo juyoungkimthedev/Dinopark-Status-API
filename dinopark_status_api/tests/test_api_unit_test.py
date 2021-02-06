@@ -64,3 +64,10 @@ class TestDinoparkStatusApi(unittest.TestCase):
         """
         with self.app as client:
             pass
+
+    def test_no_nudls_response(self):
+        """
+        Test API can handle no response from NUDLS monitoring system. I.e. service unavailable, should return 503 status code.
+        """
+        with self.app as client:
+            pass
