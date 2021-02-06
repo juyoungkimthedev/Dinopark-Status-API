@@ -14,9 +14,9 @@ from dinopark_status_api.constants import LOGGER, API_VERSION
 from dinopark_status_api.resources import Health, Status
 
 
-class DinoParkStatusApi(Api):
+class DinoparkStatusApi(Api):
     """
-    DinoPark Status API.
+    Dinopark Status API.
     """
 
     def handle_error(self, e):
@@ -81,7 +81,7 @@ class DinoParkStatusApi(Api):
 
         # Instantiate main API class within Api. This is possible as information to create object of a class
         # is already known at the point when one of its methods is called in app.py
-        api = DinoParkStatusApi(app, prefix=base_path)
+        api = DinoparkStatusApi(app, prefix=base_path)
 
         # Routes
         api.add_resource(Health, "/", endpoint="health")

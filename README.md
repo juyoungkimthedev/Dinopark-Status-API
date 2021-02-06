@@ -1,7 +1,14 @@
 # Dinopark Status API
-RESTful API to expose Dinopark dinosaur status
+REST API to expose Dinopark dinosaur status. The project runs on a docker container
+and it is important to have Docker and Docker-Compose installed on your machine to run the app.
 
-docker command: 
+Docker installation: https://docs.docker.com/get-docker/
+Docker compose installation: https://docs.docker.com/compose/install/
+
+
+### Useful Docker commands:
+
+#### docker command: 
 
 - `docker build -f ./Dockerfile .`
 - `docker run -d -p 8080:80 dinoparkapi`
@@ -9,7 +16,7 @@ docker command:
 - `docker rm -f <container_id>` 
 
 
-docker-compose command:
+#### docker-compose command:
 
 Build publishable docker image by running:
 - `docker-compose -f docker-compose.yml build`
@@ -17,17 +24,17 @@ Build publishable docker image by running:
 Run the container with:
 - `docker-compose -f docker-compose.yml up`
 
-Run the container by detaching
+Run the container by detaching:
 - `docker-compose -f docker-compose.yml up -d`
 
-Exec into docker container
+Exec into docker container:
 - `docker exec -it <docker_container_id> bash`
 
+Stop existing running docker container:
+- `docker rm -f <docker_container_id>`
 
-* things to do:
 
-1. add logic
-2. create docker compose environment
-3. create DB layer using sqllite
-4. write test
-5. readme complete.
+### Data Access Layer choice - MongoDB (NoSQL)
+
+Run MongoDB docker container from official MongoDB image.
+This is for a test purpose.
