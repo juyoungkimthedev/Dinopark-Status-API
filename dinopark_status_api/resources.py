@@ -8,8 +8,8 @@ import logging
 import requests
 
 # Third-party imports
-from flask import request, make_response, jsonify
-from flask_restful import Resource
+from flask import make_response, jsonify
+from flask_restful import Resource, reqparse
 
 # Local imports
 from dinopark_status_api.constants import LOGGER, NUDLS_URL
@@ -44,15 +44,22 @@ class Status(Resource):
         :param kwargs: key word args sent from the main API package.
 
         """
-        self._logger = logging.getLogger(LOGGER)
         # collection object passed from the main API package.
         self._collection = kwargs["collection"]
+        self._logger = logging.getLogger(LOGGER)
+        self._parser = reqparse.RequestParser()
+        self._parser.add_argument("zone", type=str, help="Provide a zone number", location="args", required=True)
 
     # TODO: Remove all the logging.error() change to logging.info()
     def get(self):
         """
         :return: A JSON response containing zone status for a given zone identifier.
         """
+
+        # Parse arguments
+        args = self._parser.parse_args()
+        req_body = dict(args)
+        zone = req_body["zone"]
 
         # Retrieve records from NUDLS monitoring system
         resp = requests.get(NUDLS_URL)
@@ -70,8 +77,8 @@ class Status(Resource):
         self._logger.error(docs_list)
 
         # Final response body of the API
-        zone = "A1"
         result = {
+            "zone": zone,
             "maintenance": "required",
             "safety": "safe"
         }
