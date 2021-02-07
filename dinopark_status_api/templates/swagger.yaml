@@ -30,7 +30,7 @@ paths:
             $ref: '#/definitions/ApiError'
   /maintenance_status/:
     get:
-      summary: The status of zone based on a unique zone identifier.
+      summary: The maintenance status of zone based on a unique zone identifier.
       description: This endpoint returns maintenance status of a zone.
       parameters:
         - name: zone
@@ -67,7 +67,7 @@ paths:
             $ref: '#/definitions/ApiError'
   /safety_status/:
     get:
-      summary: The status of zone based on a unique zone identifier.
+      summary: The safety status of zone based on a unique zone identifier.
       description: This endpoint returns safety status of a zone.
       parameters:
         - name: zone
