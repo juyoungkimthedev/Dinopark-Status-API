@@ -71,7 +71,7 @@ class StatusMaintenance(Resource):
         content = resp.json()
 
         # Check if maintenance is required. If the given zone is not in the logs, an error is returned.
-        print(content)
+
 
         # Insert status result into MongoDB and return insert count
         insert_docs = self._collection.insert_many(content)
