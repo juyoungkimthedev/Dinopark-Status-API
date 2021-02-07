@@ -85,11 +85,12 @@ class StatusMaintenance(Resource):
         if zone not in locations:
             raise BadRequest(f"Zone: {zone} is not available from NUDLS logs currently.")
 
+        # Filter document by given zone location
         filter_by_zone = [entry for entry in maintenance_log if entry["location"] == zone][0]
-        maintenance_date = filter_by_zone["time"]
 
         # Retrieve today's date and maintenance date
         today = time.strftime("%Y-%m-%d")
+        maintenance_date = filter_by_zone["time"]
         maintenance_date = datetime.strptime(maintenance_date, "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
 
         # Convert to datetime object

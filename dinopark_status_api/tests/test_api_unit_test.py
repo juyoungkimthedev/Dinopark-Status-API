@@ -67,7 +67,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
         """
         Test the safety endpoint works.
         """
-        # Test data
+        # Test NUDLS source data
         source_data = [{'kind': 'dino_fed',
                         'dinosaur_id': 1039,
                         'park_id': 1,
