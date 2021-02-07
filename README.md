@@ -170,29 +170,70 @@ Just in case you can't run test on your own machine, the screenshots are include
 
 ### How I approached the problem
 
+I first looked at the requirements outlined from introduction page and I went on reading the given information
+and try to understand the bigger picture. I thought about what problems this API need to solve (provide information
+about zones in the park to reduce mortality rate) and tried to 
+gather as much information as possible i.e. maintenance is needed for every 30 days etc. 
+
+After seeing the bigger picture and understanding the problem, I went on designing the endpoints and general architecture
+of the API system. I created an API contract using swagger file that outlines all the endpoints and how to use the API.
+Also thought about which database system I want to use for the API.
+
+I went on creating basic codebase for the API in Python Flask micro-framework and started building a
+minimum viable product (MVP) as quickly as possible. After making an MVP, I integrated MongoDB (choice of my DB)
+using docker and created basic database integration. After that, I wrote basic tests.
+
+After writing basic test, I incorporated required business logic in the API endpoints and finished tests with `mocking`
+included where necessary. Here `mocking` I'm referring to mocking HTTP request and response. The test also runs integration test 
+with MongoDB instance created locally.
+
+End to end test for all endpoints done after development.
 
 ------
 
 ### Things to do differently?
 
-- Use production ready WSGI HTTP server such as Gunicorn.
-Currently the project uses Flask's default web server which is not suitable for production level.
-
-- Database choice. Cloud hosted DB.
-
 - I would create MongoDataAccessLayer class interface with methods. Didn't want to make the project too complex.
 Creating a Mongo DAL class interface would make mocking and testing a lot eaiser.
 
-- Add OAuth authorization protocol using JWT as a token
+- Use production ready WSGI HTTP server such as Gunicorn.
+Currently the project uses Flask's default web server which is not suitable for production level.
+
+- Database choice. I would use a cloud provider hosted DB. Such as Azure Cosmos DB.
+
+- Perhaps, add OAuth authorization protocol using JWT as a token
+
+- Maybe use `FastAPI` framework which reduces development time.
+
 
 ------
 
 ### What I learned during the project 
 
+- I learned that understanding the problem before coding is really, really important.
+- I learned communication with backend consumers is really important to understand the requirements.
+- I learned writing readable, production level code is really important for maintenance later.
+- I learned writing good and robust tests that covers edge cases is crucial.
+- More technically, I learned how to setup MongoDB instance locally and spin up using docker-compose to integrate with the API.
+- I learned to write detailed `README.md` which is really important for someone who doesn't have context about the project.  
+
 ------
 
-### How I think you can improve the challenge
+### How I think the challenge can be improved?
+
+I think the assignment has good components to assess a developer's skills so I don't think it has to be more fancier. 
+But perhaps, you can include a task that involves more HTTP methods such as DELETE/PUT etc. Or you can ask the candidate
+to implement a OAuth protocol but maybe that will take a bit longer to complete. Or perhaps, you can give the candidate
+a free tier cloud resource and ask the candidate to host the app in cloud or use cloud hosted DB to see the data real time. 
 
 ------
 
 ### Technical questions outlined:
+
+A.
+
+
+B. 
+
+
+C.
