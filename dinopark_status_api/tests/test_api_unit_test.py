@@ -57,7 +57,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
 
     def test_safety_status(self):
         """
-        Test the maintenance status endpoint works.
+        Test the safety status endpoint works.
         """
         with self.app as client:
             pass
@@ -65,7 +65,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
     @patch("dinopark_status_api.resources.requests.get")
     def test_maintenance_status(self, mock_get):
         """
-        Test the safety endpoint works.
+        Test the maintenance status endpoint works.
         """
         # Test NUDLS source data
         source_data = [{'kind': 'dino_fed',
