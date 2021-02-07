@@ -79,3 +79,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
         mock_get.side_effect = HTTPError
         response = self.app.get('dinopark_status/' + API_VERSION + '/status' + args)
         self.assertEqual(response.status_code, 500)
+
+
+if __name__ == '__main__':
+    unittest.main()
