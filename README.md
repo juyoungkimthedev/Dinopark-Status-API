@@ -100,4 +100,6 @@ Currently the project uses Flask's default web server which is not suitable for 
 - Database choice. Cloud hosted DB.
 
 - I would create MongoDataAccessLayer class interface with methods. Didn't want to make the project too complex.
-Creating a Mongo DAL class interface would make mocking and testing a lot eaiser. 
+Creating a Mongo DAL class interface would make mocking and testing a lot eaiser.
+
+- Add OAuth authorization protocol using JWT as a token 
