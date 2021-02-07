@@ -75,5 +75,8 @@ definitions:
         type: string
         description: Unique zone identifier.
       maintenance_required:
+        type: integer
+        description: Whether maintenance is required in the zone or not. 0 - False, not required. 1 - True, required.
+      info:
         type: string
-        description: Whether maintenance is required in the zone or not.
+        description: Information regarding how many days into after last maintenance performed.
