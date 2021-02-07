@@ -6,6 +6,7 @@ API resource mapped to REST routes.
 # System imports
 import logging
 import requests
+from werkzeug.exceptions import ServiceUnavailable
 
 # Third-party imports
 from flask import make_response, jsonify
@@ -55,26 +56,31 @@ class Status(Resource):
         """
         :return: A JSON response containing zone status for a given zone identifier.
         """
-
         # Parse arguments
         args = self._parser.parse_args()
         query = dict(args)
         zone = query["zone"]
 
         # Retrieve records from NUDLS monitoring system
-        resp = requests.get(NUDLS_URL)
-        resp_body = resp.json()
+        # resp = requests.get(NUDLS_URL)
+        # if resp.status_code != 200:
+        #     # If NUDLS system is down, we want to return 503 error status
+        #     raise ServiceUnavailable("NUDLS service is currently unavailable. Try again later.")
+        # Retrieve JSON entries
+        # resp_body = resp.json()
+
+        try:
+            resp = requests.get(NUDLS_URL)
+            resp_body = resp.json()
+            resp.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            self._logger.error(err)
+            raise
 
         # Insert retrieved records into MongoDB and return insert count
         insert_docs = self._collection.insert_many(resp_body)
         insert_count = len(insert_docs.inserted_ids)
         self._logger.error(f"Number of documents inserted: {insert_count}")
-
-        # Display logs of the content retrieved
-        docs_list = []
-        for doc in self._collection.find():
-            docs_list.append(doc)
-        self._logger.error(docs_list)
 
         # Final response body of the API
         result = {

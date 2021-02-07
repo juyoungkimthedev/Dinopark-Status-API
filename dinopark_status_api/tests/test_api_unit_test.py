@@ -4,6 +4,7 @@ Tests API main functionality.
 
 # System imports
 import unittest
+from unittest.mock import patch, Mock
 
 # Third-party import
 import pymongo
@@ -66,9 +67,15 @@ class TestDinoparkStatusApi(unittest.TestCase):
         with self.app as client:
             pass
 
-    def test_no_nudls_response(self):
+    @patch("dinopark_status_api.resources.requests.get")
+    def test_no_nudls_response(self, get_mock):
         """
-        Test API can handle no response from NUDLS monitoring system. I.e. service unavailable, should return 503 status code.
+        Test API can handle no response from NUDLS monitoring system. I.e. Service unavailable, should return 503 status code.
         """
-        with self.app as client:
-            pass
+        # Test query args
+        # args = "?zone=" + "A1"
+        # with self.app as client:
+        #     # Mock requests.get to return non 200 status code so that ServiceUnavailable exception is raised
+        #     get_mock.return_value = Mock(status_code=503)
+        #     response = client.get('dinopark_status/' + API_VERSION + '/status' + args)
+        #     self.assertEqual(response.status_code, 503)
