@@ -67,14 +67,14 @@ class StatusMaintenance(Resource):
             self._logger.error(err)
             raise
 
-        # Retrieve content from the logs
-        resp_body = resp.json()
+        # Retrieve content of the logs
+        content = resp.json()
 
         # Check if maintenance is required. If the given zone is not in the logs, an error is returned.
-
+        print(content)
 
         # Insert status result into MongoDB and return insert count
-        insert_docs = self._collection.insert_many(resp_body)
+        insert_docs = self._collection.insert_many(content)
         insert_count = len(insert_docs.inserted_ids)
         self._logger.error(f"Number of documents inserted: {insert_count}")
 
