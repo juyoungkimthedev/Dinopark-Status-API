@@ -209,6 +209,11 @@ Currently the project uses Flask's default web server which is not suitable for 
 
 - Maybe use `FastAPI` framework which reduces development time.
 
+- In terms of business logic, I would engage a lot more with the stakeholders
+to find out if there are any edge cases to write more robust tests. For example, will
+NUDLS monitoring log return multiple logs with same zones? This enables a developer
+to design more robust system.
+
 
 ------
 
