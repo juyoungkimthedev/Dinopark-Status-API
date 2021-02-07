@@ -5,6 +5,8 @@ Tests API main functionality.
 # System imports
 import unittest
 import mock
+import time
+from datetime import datetime
 from unittest.mock import Mock, patch
 
 # Third-party import
@@ -86,10 +88,15 @@ class TestDinoparkStatusApi(unittest.TestCase):
                         'park_id': 1,
                         'time': '2021-02-03T17:08:01.497Z'}]
 
+        # Setup test dates. This is required since today's event_date changes everyday and test might fail.
+        test_today_date = datetime.strptime(time.strftime("%Y-%m-%d"), "%Y-%m-%d")
+        test_source_date = datetime.strptime("2021-02-03", "%Y-%m-%d")
+        test_date_diff = (test_today_date - test_source_date).days
+
         expected_response = {
             "zone": "O4",
             "maintenance_required": 0,
-            "info": "Maintenance is not required. Currently 4 days after last maintenance performed."
+            "info": f"Maintenance is not required. Currently {test_date_diff} days after last maintenance performed."
         }
 
         with self.app as client:
