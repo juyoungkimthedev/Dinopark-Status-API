@@ -6,7 +6,23 @@ for maintenance and safety status for a given unique zone identifier.
 The project runs on a docker container and it is important to have 
 **Docker** and **Docker-Compose** installed on your machine to run the app.
 
-----
+-----
+
+## API Specification
+
+I have created a `swagger contract` for Dinopark Status API. It is commonly known as OpenAPI specification.
+The API contract is written in `YAML` file. You can find the contract from `dinopark_status_api/templates/swagger.yaml`.
+
+Please view the *prettier* version of the contract from online swagger editor: `https://editor.swagger.io/`.
+Simply copy content of `swagger.yaml` and paste it onto the online editor.
+
+Example:
+
+![Screenshot](example_screenshots/swagger.png)
+
+
+-----
+
 
 ## How to setup, run and test the app
 
@@ -112,7 +128,7 @@ To see data entries inside MongoDB instance created from docker
 - `docker exec -it <mongo_db_instance_name> bash`
 
 To see database and collection inside the mongo container shell
-- `mongo`
+- `mongo` - start mongo shell inside mongodb container
 - `show dbs`
 - `use <database_name>`
 - `show collections`
