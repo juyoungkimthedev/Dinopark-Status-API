@@ -55,7 +55,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response_json, {"status": {"code": 200, "info": "Welcome to Dino Park Status API!", "status": "SUCCESS"}})
 
-    def test_maintenance_status(self):
+    def test_safety_status(self):
         """
         Test the maintenance status endpoint works.
         """
@@ -63,7 +63,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
             pass
 
     @patch("dinopark_status_api.resources.requests.get")
-    def test_safety_status(self, mock_get):
+    def test_maintenance_status(self, mock_get):
         """
         Test the safety endpoint works.
         """
