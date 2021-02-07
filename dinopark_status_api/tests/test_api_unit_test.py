@@ -4,7 +4,7 @@ Tests API main functionality.
 
 # System imports
 import unittest
-from unittest.mock import patch, Mock
+import mock
 
 # Third-party import
 import pymongo
