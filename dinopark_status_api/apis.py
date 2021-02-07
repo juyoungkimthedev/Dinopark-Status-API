@@ -63,7 +63,8 @@ class DinoparkStatusApi(Api):
         # Base path
         base_path = "/dinopark_status/" + API_VERSION
 
-        # Create Mongo database and collection
+        # When the app starts, create Mongo database and collection.
+        # This does not recreate db and collection when a request is made, but pass the db and collection objects to the starting app.
         database = data_access_layer[DATABASE_NAME]
         collection = database[COLLECTION_NAME]
 

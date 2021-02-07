@@ -35,7 +35,7 @@ Build publishable docker image by running:
 Run the container with:
 - `docker-compose -f docker-compose.yml up`
 
-Run the container by detaching:
+Run the container by detaching. By doing this you can exec into container:
 - `docker-compose -f docker-compose.yml up -d`
 
 Exec into docker container:

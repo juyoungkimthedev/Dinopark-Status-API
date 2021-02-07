@@ -17,15 +17,17 @@ class TestDinoparkStatusApi(unittest.TestCase):
     """
     Tests main functions of the API.
     """
+    # MongoDB setup
+    # We're testing using docker-compose remote interpreter so we can use same mongodb instance
+    _MONGO_DAL = pymongo.MongoClient("mongodb://mongodb:27017/")
+
     @classmethod
     def setUpClass(cls):
         """
         A class method to setup a test app and mongodb.
         """
-        # Setup test client and mongodb
-        # We're testing using docker-compose remote interpreter so we can use same mongodb instance
-        mongo_url = "mongodb://mongodb:27017/"
-        mongo_dal = pymongo.MongoClient(mongo_url)
+        # Setup test client
+        mongo_dal = cls._MONGO_DAL
         app = DinoparkStatusApi.create_app(mongo_dal)
         cls.app = app.test_client()
 
@@ -34,12 +36,11 @@ class TestDinoparkStatusApi(unittest.TestCase):
         """
         A class method called after tests in an individual class have run. This is to drop or delete collection entries after running test.
         """
-        # list existing databases
-        for database in cls.mongo_dal.list_databases():
-            print(database)
-
-        # delete existing collection and the entries inside.
-        pass
+        # Retrieve db and collection
+        test_db = cls._MONGO_DAL["dinopark_status_db"]
+        test_collection = test_db["dinopark_status_collection"]
+        # Remove documents from the collection
+        test_collection.delete_many({})
 
     def test_health_endpoint(self):
         """
