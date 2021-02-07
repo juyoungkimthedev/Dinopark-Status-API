@@ -4,7 +4,8 @@ Custom JSON Encoder
 """
 
 # System imports
-import json, bson
+import json
+import bson
 
 
 class MongoJsonEncoder(json.JSONEncoder):

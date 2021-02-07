@@ -27,6 +27,7 @@ mongo_dal = pymongo.MongoClient(MONGO_URL)
 
 # Setup App
 app = DinoparkStatusApi.create_app(data_access_layer=mongo_dal)
+# Add custom JSON encoder for MongoDB _id
 app.json_encoder = MongoJsonEncoder
 
 if __name__ == '__main__':
