@@ -8,6 +8,7 @@ import logging
 import requests
 import time
 from datetime import datetime
+from werkzeug.exceptions import BadRequest
 
 # Third-party imports
 from flask import make_response, jsonify
@@ -76,8 +77,14 @@ class StatusMaintenance(Resource):
         # Retrieve content of the logs
         content = resp.json()
 
-        # Retrieve maintenance performed date
+        # Retrieve maintenance performed date by filtering logs
         maintenance_log = [entry for entry in content if entry["kind"] == "maintenance_performed"]
+
+        # Check if zone exists in the logs
+        locations = [entry["location"] for entry in maintenance_log]
+        if zone not in locations:
+            raise BadRequest(f"Zone: {zone} is not available from NUDLS logs currently.")
+
         filter_by_zone = [entry for entry in maintenance_log if entry["location"] == zone][0]
         maintenance_date = filter_by_zone["time"]
 
