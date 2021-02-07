@@ -94,6 +94,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
 
         with self.app as client:
             args = "?zone=" + "O4"
+            # Mock response.json() return values
             mock_get.return_value = Mock(status_code=200, json=lambda: source_data)
             response = client.get('dinopark_status/' + API_VERSION + '/maintenance_status' + args)
             response_json = response.get_json()
