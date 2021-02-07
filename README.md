@@ -66,6 +66,10 @@ To see database and collection inside the mongo container shell
 - `db.<collection_name>.find().pretty()` - show all the entries
 - `db.<collection_name>.remove({})` - to delete all documents
 
+MongoDB (document DB) is a good choice for unstructured data and we can set
+the zone number as a partition key to improve the query performance when searching for
+status of a zone.
+
 
 ------
 

@@ -28,7 +28,7 @@ paths:
           description: Route not found. Usually indicates an invalid url.
           schema:
             $ref: '#/definitions/ApiError'
-  /status/:
+  /maintenance_status/:
     get:
       summary: The status of zone based on a unique zone identifier.
       description: This endpoint returns status of a zone.
@@ -44,7 +44,7 @@ paths:
         200:
           description: Successful call.
           schema:
-            $ref: '#/definitions/Status'
+            $ref: '#/definitions/Maintenance_Status'
         400:
           description: Required parameter not in the request.
           schema:
@@ -68,12 +68,12 @@ definitions:
     properties:
       message:
         type: string
-  Status:
+  Maintenance_Status:
     type: object
     properties:
-      maintenance:
+      zone:
+        type: string
+        description: Unique zone identifier.
+      maintenance_required:
         type: string
         description: Whether maintenance is required in the zone or not.
-      safe_to_enter:
-        type: string
-        description: Whether the zone is safe to enter or not.

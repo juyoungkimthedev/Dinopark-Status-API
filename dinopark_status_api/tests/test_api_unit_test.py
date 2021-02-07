@@ -8,6 +8,7 @@ import mock
 
 # Third-party import
 import pymongo
+from requests.exceptions import HTTPError
 
 # Local imports
 from dinopark_status_api.constants import API_VERSION
@@ -55,27 +56,26 @@ class TestDinoparkStatusApi(unittest.TestCase):
 
     def test_maintenance_status(self):
         """
-        Test the health endpoint works.
+        Test the maintenance status endpoint works.
         """
         with self.app as client:
             pass
 
     def test_safety_status(self):
         """
-        Test the health endpoint works.
+        Test the safety endpoint works.
         """
         with self.app as client:
             pass
 
-    @patch("dinopark_status_api.resources.requests.get")
-    def test_no_nudls_response(self, get_mock):
+    @mock.patch("dinopark_status_api.resources.requests.get")
+    def test_no_nudls_response(self, mock_get):
         """
-        Test API can handle no response from NUDLS monitoring system. I.e. Service unavailable, should return 503 status code.
+        Test API can handle exceptions raised when NUDLS is down.
         """
         # Test query args
-        # args = "?zone=" + "A1"
-        # with self.app as client:
-        #     # Mock requests.get to return non 200 status code so that ServiceUnavailable exception is raised
-        #     get_mock.return_value = Mock(status_code=503)
-        #     response = client.get('dinopark_status/' + API_VERSION + '/status' + args)
-        #     self.assertEqual(response.status_code, 503)
+        args = "?zone=" + "A1"
+        # Mock response and exception
+        mock_get.side_effect = HTTPError
+        response = self.app.get('dinopark_status/' + API_VERSION + '/status' + args)
+        self.assertEqual(response.status_code, 500)

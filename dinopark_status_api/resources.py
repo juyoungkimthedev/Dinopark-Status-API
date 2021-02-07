@@ -6,7 +6,6 @@ API resource mapped to REST routes.
 # System imports
 import logging
 import requests
-from werkzeug.exceptions import ServiceUnavailable
 
 # Third-party imports
 from flask import make_response, jsonify
@@ -34,9 +33,9 @@ class Health(Resource):
         }))
 
 
-class Status(Resource):
+class StatusMaintenance(Resource):
     """
-    End-point for providing the zone status in Dino Park for a given zone identifier.
+    End-point for providing the zone maintenance status in Dino Park for a given zone identifier.
     """
 
     def __init__(self, **kwargs):
@@ -51,43 +50,37 @@ class Status(Resource):
         self._parser = reqparse.RequestParser()
         self._parser.add_argument("zone", type=str, help="Provide a zone number", location="args", required=True)
 
-    # TODO: Remove all the logging.error() change to logging.info()
     def get(self):
         """
-        :return: A JSON response containing zone status for a given zone identifier.
+        :return: A JSON response containing zone maintenance status for a given zone identifier.
         """
-        # Parse arguments
+        # Parse query arguments
         args = self._parser.parse_args()
         query = dict(args)
         zone = query["zone"]
 
-        # Retrieve records from NUDLS monitoring system
-        # resp = requests.get(NUDLS_URL)
-        # if resp.status_code != 200:
-        #     # If NUDLS system is down, we want to return 503 error status
-        #     raise ServiceUnavailable("NUDLS service is currently unavailable. Try again later.")
-        # Retrieve JSON entries
-        # resp_body = resp.json()
-
+        # Retrieve logs from NUDLS monitoring system
         try:
             resp = requests.get(NUDLS_URL)
-            resp_body = resp.json()
             resp.raise_for_status()
         except requests.exceptions.HTTPError as err:
             self._logger.error(err)
             raise
+
+        # Retrieve content from the logs
+        resp_body = resp.json()
 
         # Insert retrieved records into MongoDB and return insert count
         insert_docs = self._collection.insert_many(resp_body)
         insert_count = len(insert_docs.inserted_ids)
         self._logger.error(f"Number of documents inserted: {insert_count}")
 
-        # Final response body of the API
+        # Final response body of the API - zone will be a partition key inside document DB
         result = {
             "zone": zone,
             "maintenance": "required",
-            "safety": "safe"
         }
-        self._logger.error(f"Processed request for zone: {zone}")
+
+        self._logger.error(f"Processed maintenance status request for zone: {zone}")
 
         return make_response(jsonify(result))

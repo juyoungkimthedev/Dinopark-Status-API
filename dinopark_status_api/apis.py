@@ -11,7 +11,7 @@ from flask_restful import Api
 
 # Local imports
 from dinopark_status_api.constants import LOGGER, API_VERSION, DATABASE_NAME, COLLECTION_NAME
-from dinopark_status_api.resources import Health, Status
+from dinopark_status_api.resources import Health, StatusMaintenance
 
 
 class DinoparkStatusApi(Api):
@@ -96,10 +96,10 @@ class DinoparkStatusApi(Api):
                          "/",
                          endpoint="health")
 
-        api.add_resource(Status,
-                         "/status/",
-                         "/status",
-                         endpoint="status",
+        api.add_resource(StatusMaintenance,
+                         "/maintenance_status/",
+                         "/maintenance_status",
+                         endpoint="maintenance_status",
                          resource_class_kwargs={"collection": collection},  # kwargs to send to constructor of resource class
                          strict_slashes=False)
 
