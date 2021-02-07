@@ -70,7 +70,10 @@ class StatusMaintenance(Resource):
         # Retrieve content from the logs
         resp_body = resp.json()
 
-        # Insert retrieved records into MongoDB and return insert count
+        # Check if maintenance is required. If the given zone is not in the logs, an error is returned.
+
+
+        # Insert status result into MongoDB and return insert count
         insert_docs = self._collection.insert_many(resp_body)
         insert_count = len(insert_docs.inserted_ids)
         self._logger.error(f"Number of documents inserted: {insert_count}")
