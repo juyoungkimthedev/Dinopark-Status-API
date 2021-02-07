@@ -12,6 +12,7 @@ import pymongo
 # Local imports
 from dinopark_status_api.constants import API_VERSION, LOGGER
 from dinopark_status_api.apis import DinoparkStatusApi
+from dinopark_status_api.json_encoder import MongoJsonEncoder
 
 # Setup logging
 logger = logging.getLogger(LOGGER)
@@ -26,6 +27,7 @@ mongo_dal = pymongo.MongoClient(MONGO_URL)
 
 # Setup App
 app = DinoparkStatusApi.create_app(data_access_layer=mongo_dal)
+app.json_encoder = MongoJsonEncoder
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)  # TODO: remember to set debug=False before completing!

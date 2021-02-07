@@ -118,11 +118,13 @@ class StatusMaintenance(Resource):
         }
 
         # Insert status result into MongoDB and return insert count
-        docs_insert = [result]
-        insert_docs = self._collection.insert_many(docs_insert)
+        insert_docs = self._collection.insert_many([result])
         insert_count = len(insert_docs.inserted_ids)
         self._logger.error(f"Number of documents inserted: {insert_count}")
 
         self._logger.error(f"Processed maintenance status request for zone: {zone}")
+
+        # Delete _id key from the final response after insertion into MongoDB
+        result.pop("_id")
 
         return make_response(jsonify(result))
