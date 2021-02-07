@@ -1,14 +1,24 @@
 # Dinopark Status API
-REST API to expose Dinopark dinosaur status. The project runs on a docker container
-and it is important to have Docker and Docker-Compose installed on your machine to run the app.
 
----------
-## How to setup and run the app
+REST API to expose Dinopark status. Dinopark Status API exposes endpoints
+for maintenance and safety status for a given unique zone identifier. 
 
-- 
+The project runs on a docker container and it is important to have 
+**Docker** and **Docker-Compose** installed on your machine to run the app.
 
-Docker installation: https://docs.docker.com/get-docker/
-Docker compose installation: https://docs.docker.com/compose/install/
+----
+
+## How to setup, run and test the app
+
+The app runs on docker container with docker-compose. 
+If you don't have docker installed, please follow the guide below:
+
+- Docker installation: https://docs.docker.com/get-docker/
+- Docker compose installation: https://docs.docker.com/compose/install/
+
+Also install Python 3 if you don't have Python installed on your machine.
+
+-----
 
 ### Useful Docker commands:
 
@@ -21,7 +31,7 @@ Run docker container with ports
 - `docker run -d -p 5001:80 dinoparkapi`
 
 Hit the endpoint
-- `curl http://localhost:5001`
+- `curl http://localhost:5001/<path>...`
 
 How to remove running docker container gracefully
 - `docker rm -f <container_id>` 
@@ -43,6 +53,40 @@ Exec into docker container:
 
 Stop existing running docker container:
 - `docker rm -f <docker_container_id>`
+
+-------
+
+### Running the app and testing
+
+A. In the root project directory, build docker image. This might take some time depending on your system,
+as you have to download base Python and MongoDB images and install dependencies for the first time.
+
+Run in the project root directory - `docker-compose -f docker-compose.yml build`
+
+B. Spin up App and MongoDB docker containers from the built images. 
+
+Run - `docker-compose -f docker-compose.yml up`
+
+You can run in detach mode to be able to exec into containers if you want with the below command:
+
+`docker-compose -f docker-compose.yml up -d`
+
+C. When docker containers spin up locally using docker-compose.yml, now you can test the app.
+This will spin up the API and MongoDB instance.
+First hit health endpoint to see if the app is running fine:
+
+To test health endpoint:
+- `localhost:5001/dinopark_status/v1/`
+
+To test zone maintenance status:
+- `localhost:5001/dinopark_status/v1/maintenance_status?zone=A1`
+
+To test zone safety status:
+- `localhost:5001/dinopark_status/v1/safety_status?zone=A1`
+
+
+Example test result:
+
 
 -------
 
@@ -82,22 +126,19 @@ and `pylint` binary files and return scores.
 
 ------
 
-### Running test
+### Running code test
 
 - I have used `docker-compose` as a remote interpreter in PyCharm IDE, this means 
 you can run, debug and test the app in an isolated environment right from the IDE.
 useful link: https://www.jetbrains.com/help/ruby/using-docker-compose-as-a-remote-interpreter.html
 
-Just in case you can't run test on your own machine, here are screenshots of successful tests:
+Just in case you can't run test on your own machine, the screenshots are included below:
+
 
 ------
 
-### How to test the API
+### How I approached the problem
 
-When docker containers spin up using docker-compose.yml
-
-To test zone maintenance status:
-`localhost:5001/dinopark_status/v1/maintenance_status?zone=A1`
 
 ------
 
@@ -111,4 +152,16 @@ Currently the project uses Flask's default web server which is not suitable for 
 - I would create MongoDataAccessLayer class interface with methods. Didn't want to make the project too complex.
 Creating a Mongo DAL class interface would make mocking and testing a lot eaiser.
 
-- Add OAuth authorization protocol using JWT as a token 
+- Add OAuth authorization protocol using JWT as a token
+
+------
+
+### What I learned during the project 
+
+------
+
+### How I think you can improve the challenge
+
+------
+
+### Technical questions outlined:
