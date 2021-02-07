@@ -5,6 +5,7 @@ Tests API main functionality.
 # System imports
 import unittest
 import mock
+from unittest.mock import Mock, patch
 
 # Third-party import
 import pymongo
@@ -61,12 +62,43 @@ class TestDinoparkStatusApi(unittest.TestCase):
         with self.app as client:
             pass
 
-    def test_safety_status(self):
+    @patch("dinopark_status_api.resources.requests.get")
+    def test_safety_status(self, mock_get):
         """
         Test the safety endpoint works.
         """
+        # Test data
+        source_data = [{'kind': 'dino_fed',
+                        'dinosaur_id': 1039,
+                        'park_id': 1,
+                        'time': '2021-02-06T17:08:01.496Z'},
+                       {'kind': 'dino_location_updated',
+                        'location': 'V16',
+                        'dinosaur_id': 1032,
+                        'park_id': 1,
+                        'time': '2021-02-05T17:08:01.497Z'},
+                       {'kind': 'dino_removed',
+                        'dinosaur_id': 1047,
+                        'park_id': 1,
+                        'time': '2021-02-05T17:08:01.497Z'},
+                       {'kind': 'maintenance_performed',
+                        'location': 'O4',
+                        'park_id': 1,
+                        'time': '2021-02-03T17:08:01.497Z'}]
+
+        expected_response = {
+            "zone": "O4",
+            "maintenance_required": 0,
+            "info": "Maintenance is not required. Currently 4 days after last maintenance performed."
+        }
+
         with self.app as client:
-            pass
+            args = "?zone=" + "O4"
+            mock_get.return_value = Mock(status_code=200, json=lambda: source_data)
+            response = client.get('dinopark_status/' + API_VERSION + '/maintenance_status' + args)
+            response_json = response.get_json()
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response_json, expected_response)
 
     @mock.patch("dinopark_status_api.resources.requests.get")
     def test_no_nudls_response(self, mock_get):
@@ -77,7 +109,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
         args = "?zone=" + "A1"
         # Mock response and exception
         mock_get.side_effect = HTTPError
-        response = self.app.get('dinopark_status/' + API_VERSION + '/status' + args)
+        response = self.app.get('dinopark_status/' + API_VERSION + '/maintenance_status' + args)
         self.assertEqual(response.status_code, 500)
 
 
