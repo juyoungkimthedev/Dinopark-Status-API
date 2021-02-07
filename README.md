@@ -85,7 +85,18 @@ To test zone safety status:
 - `localhost:5001/dinopark_status/v1/safety_status?zone=A1`
 
 
-Example test result:
+Example test result screenshots:
+
+**Maintenance required:**
+
+![Screenshot](example_screenshots/maintenance_required.png)
+
+**Maintenance not required**
+
+![Screenshot](example_screenshots/maintenance_not_required.png)
+
+**Zone not in NUDLS logs**
+![Screenshot](example_screenshots/maintenance_status_bad_request_no_zone.png)
 
 
 -------
@@ -133,6 +144,10 @@ you can run, debug and test the app in an isolated environment right from the ID
 useful link: https://www.jetbrains.com/help/ruby/using-docker-compose-as-a-remote-interpreter.html
 
 Just in case you can't run test on your own machine, the screenshots are included below:
+
+**test_api_error_handler.py**
+
+![Screenshot](example_screenshots/test_api_definition_1.png)
 
 
 ------
