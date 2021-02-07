@@ -92,6 +92,15 @@ Just in case you can't run test on your own machine, here are screenshots of suc
 
 ------
 
+### How to test the API
+
+When docker containers spin up using docker-compose.yml
+
+To test zone maintenance status:
+`localhost:5001/dinopark_status/v1/maintenance_status?zone=A1`
+
+------
+
 ### Things to do differently?
 
 - Use production ready WSGI HTTP server such as Gunicorn.
