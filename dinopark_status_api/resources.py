@@ -129,3 +129,69 @@ class StatusMaintenance(Resource):
         result.pop("_id")
 
         return make_response(jsonify(result))
+
+
+class StatusSafety(Resource):
+    """
+    End-point for providing the zone safety status in Dino Park for a given zone identifier.
+
+    """
+
+    def __init__(self, **kwargs):
+        """
+        Constructor.
+        :param kwargs: key word args sent from the main API package.
+
+        """
+        # collection object passed from the main API package.
+        self._collection = kwargs["collection"]
+        self._logger = logging.getLogger(LOGGER)
+        self._parser = reqparse.RequestParser()
+        self._parser.add_argument("zone", type=str, help="Provide a zone number", location="args", required=True)
+
+    def get(self):
+        """
+        :return: A JSON response containing zone safety status for a given zone identifier.
+        """
+        # Parse query arguments
+        args = self._parser.parse_args()
+        query = dict(args)
+        zone = query["zone"]
+
+        # Retrieve logs from NUDLS monitoring system
+        try:
+            resp = requests.get(NUDLS_URL)
+            resp.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            self._logger.error(err)
+            raise
+
+        # Retrieve content of the logs
+        content = resp.json()
+
+        # Retrieve maintenance performed date by filtering logs
+        maintenance_log = [entry for entry in content if entry["kind"] == "maintenance_performed"]
+
+        # Check if zone exists in the logs
+        locations = [entry["location"] for entry in maintenance_log]
+        if zone not in locations:
+            raise BadRequest(f"Zone: {zone} is not available from NUDLS logs currently.")
+
+        # Final response body of the API - zone will be a partition key inside document DB
+        result = {
+            "zone": zone,
+            "maintenance_required": maintenance_required,
+            "info": maintenance_status
+        }
+
+        # Insert status result into MongoDB and return insert count
+        insert_docs = self._collection.insert_many([result])
+        insert_count = len(insert_docs.inserted_ids)
+        self._logger.error(f"Number of documents inserted: {insert_count}")
+
+        self._logger.error(f"Processed safety status request for zone: {zone}")
+
+        # Delete _id key from the final response after insertion into MongoDB
+        result.pop("_id")
+
+        return make_response(jsonify(result))

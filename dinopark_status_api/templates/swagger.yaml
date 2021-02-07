@@ -31,7 +31,7 @@ paths:
   /maintenance_status/:
     get:
       summary: The status of zone based on a unique zone identifier.
-      description: This endpoint returns status of a zone.
+      description: This endpoint returns maintenance status of a zone.
       parameters:
         - name: zone
           in: query
@@ -46,15 +46,56 @@ paths:
           schema:
             $ref: '#/definitions/Maintenance_Status'
         400:
-          description: Required parameter not in the request.
+          description: Required parameter not in the request. For example the zone provided does not exist in the logs retrieved from NUDLS
           schema:
             $ref: '#/definitions/ApiError'
         404:
-          description: Route not found. Usually indicates an invalid url. Or the zone provided does not exist in the logs retrieved from NUDLS.
+          description: Route not found. Usually indicates an invalid url.
           schema:
             $ref: '#/definitions/ApiError'
         405:
           description: Unsupported operation. Usually indicates that the requested method is not allowed.
+          schema:
+            $ref: '#/definitions/ApiError'
+        500:
+          description: Internal Server Error. Usually indicates that server encountered unexpected condition. Can be NUDLS or the app itself.
+          schema:
+            $ref: '#/definitions/ApiError'
+        503:
+          description: Service Unavailable. Usually indicates that an external dependency failed i.e. NUDLS endpoint is unavailable.
+          schema:
+            $ref: '#/definitions/ApiError'
+  /safety_status/:
+    get:
+      summary: The status of zone based on a unique zone identifier.
+      description: This endpoint returns safety status of a zone.
+      parameters:
+        - name: zone
+          in: query
+          type: string
+          required: true
+          description: "A unique zone identifier."
+      tags:
+        - Dinopark Status
+      responses:
+        200:
+          description: Successful call.
+          schema:
+            $ref: '#/definitions/Safety_Status'
+        400:
+          description: Required parameter not in the request. For example the zone provided does not exist in the logs retrieved from NUDLS
+          schema:
+            $ref: '#/definitions/ApiError'
+        404:
+          description: Route not found. Usually indicates an invalid url.
+          schema:
+            $ref: '#/definitions/ApiError'
+        405:
+          description: Unsupported operation. Usually indicates that the requested method is not allowed.
+          schema:
+            $ref: '#/definitions/ApiError'
+        500:
+          description: Internal Server Error. Usually indicates that server encountered unexpected condition. Can be NUDLS or the app itself.
           schema:
             $ref: '#/definitions/ApiError'
         503:
@@ -80,3 +121,15 @@ definitions:
       info:
         type: string
         description: Information regarding how many days into after last maintenance performed.
+  Safety_Status:
+    type: object
+    properties:
+      zone:
+        type: string
+        description: Unique zone identifier.
+      safety_status:
+        type: integer
+        description: Whether it's safe to enter the zone. 0 - False, enter not allowed. 1 - True, enter allowed.
+      info:
+        type: string
+        description: Information regarding the zone. For example, what dinosaur is in the zone.

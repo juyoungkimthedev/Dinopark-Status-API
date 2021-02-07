@@ -18,7 +18,7 @@ from dinopark_status_api.json_encoder import MongoJsonEncoder
 logger = logging.getLogger(LOGGER)
 logger.info(f"Starting DinoPark Status API {API_VERSION}")
 
-# Setup MongoDB as a persistent layer
+# Setup MongoDB as a persistent layer (Data Access Layer)
 # The main app service is in a different container than mongodb container
 # from docker point of view it's under different ip, just use service name specified in docker-compose as the hostname
 # i.e. mongodb://<MONGO_DB_IP_ADDRESS>/<PORT>/
