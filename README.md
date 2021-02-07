@@ -173,7 +173,11 @@ Just in case you can't run test on your own machine, the screenshots are include
 I first looked at the requirements outlined from introduction page and I went on reading the given information
 and try to understand the bigger picture. I thought about what problems this API need to solve (provide information
 about zones in the park to reduce mortality rate) and tried to 
-gather as much information as possible i.e. maintenance is needed for every 30 days etc. 
+gather as much information as possible i.e. maintenance is needed for every 30 days etc.
+
+In terms of maintenance, I retrieved maintenance information from NUDLS logs and worked out
+the difference between today's date (when API was called) and the last date the maintenance was performed.
+If the difference in days is <= 30, means no maintenance is required. If difference is > 30, maintenance is required.
 
 After seeing the bigger picture and understanding the problem, I went on designing the endpoints and general architecture
 of the API system. I created an API contract using swagger file that outlines all the endpoints and how to use the API.
