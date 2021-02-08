@@ -179,6 +179,21 @@ In terms of maintenance, I retrieved maintenance information from NUDLS logs and
 the difference between today's date (when API was called) and the last date the maintenance was performed.
 If the difference in days is <= 30, means no maintenance is required. If difference is > 30, maintenance is required.
 
+In terms of safety, I created a simple algorithmic flow. Given the information about safety:
+I created look up dictionary for each dinosaur based on their "id" mapped to species, type, digestion time, removal date etc.
+
+1. Check if dinosaur is herbivore. `If yes -> safe` `if no -> go to next point`
+
+2. Check if dinosaur was removed. `If yes -> check if it was removed before or after location update`.
+if removal date > updated date, it's safe to enter. Else, dinosaur was removed before but added again. `If no -> dinosaur was not removed,
+go to next point`
+
+3. Check if dinosaur was fed. `If no -> not safe to enter.`
+`If yes -> check if (fed_time + digestion_time) < today (when API was called), thus, not safe. Else, 
+(fed_time + digestion_time) >= today, dinosaur is still digesting thus safe to enter.`
+  
+4. Return safety status of the zone with information about dinosaur (species).  
+
 After seeing the bigger picture and understanding the problem, I went on designing the endpoints and general architecture
 of the API system. I created an API contract using swagger file that outlines all the endpoints and how to use the API.
 Also thought about which database system I want to use for the API.
