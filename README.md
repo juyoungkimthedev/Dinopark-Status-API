@@ -114,6 +114,11 @@ Example test result screenshots:
 **Zone not in NUDLS logs**
 ![Screenshot](example_screenshots/maintenance_status_bad_request_no_zone.png)
 
+**Safety status, not safe to enter**
+![Screenshot](example_screenshots/safety_status_not_safe.png)
+
+**Safety status, safe to enter**
+![Screenshot](example_screenshots/safety_status_safe_to_enter.png)
 
 -------
 
