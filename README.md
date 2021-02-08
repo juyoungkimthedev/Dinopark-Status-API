@@ -267,10 +267,40 @@ a free tier cloud resource and ask the candidate to host the app in cloud or use
 
 ### Technical questions outlined:
 
-A.
+A. To make the service more resilient and meet the desired SLAs for HA, the most important factor is to remove single point of failure.
+I would consider scaling the service horizontally using cloud native. This is probably costly but it is most error prone and it's fast.
+It suits for production purpose. We can use cloud providers such as AWS or Azure and host the app/service in Azure Kubernetes Services
+or Elastic Kubernetes Services. The apps are running in container so orchestration tools like Kubernetes would handle replicating the app
+and also auto-scale and start the new replica app when one goes down etc. These cluster services come with fully managed load balancers
+to distribute the load and increase reliability of the app. I would also consider going fully cloud based managed databases that guarantees
+99.99% uptime and SLAs. Databases such as Azure CosmosDB (document DB) or AWS DynamoDB are options. These databases can achieve HA
+with replicas (also allows database sharding to distribute the load and store data on multiple db machines). 
+You can also set up disaster recovery (DR) clusters and configs.
 
 
-B. 
+B. To handle the scaling, I would consider going horizontal scaling using cloud native as answered in part 1. If the park is housing
+a few million dinosaurs, that means more maintenance zones and obviously more logs, and more requests will be made to maintain the park.
+For a given solution:
+
+1. I expect the API web server will be very slow i.e. response time will be extremely slow Connection/Timeout issue is guaranteed, since I'm using non-production web server
+i.e. using Flask's built in web server. This is problem because Flask runs on single threaded mode handling one request at a time
+so I would probably change the web server to production ready WSGI such as Gunicorn plus, I would change the app's run mode to threaded=True.
+With Gunicorn having multiple workers and threads, hosted on Kubernetes cluster managed with Rancher server etc. would allow parallel request handling.
+
+2. I'm currently using local MongoDB instance running as a docker container locally. This is never going to scale and it's going to break by throwing
+throttling issues or connection timeout etc. because there is no SLA in these instances. So the service will be unavailable and break.
+Writing and reading speed will also be very slow. One solution is to go cloud native and use cloud databases. You can increase throughput of the database
+as much as you want. Choice of NoSQL such as MongoDB for schema-less unstructured data is good and I would go for NoSQL cloud databases such as Azure Cosmos DB for example.
+With cloud hosted databases as the data stored in the db gets larger and larger with more dinosaur and write queries, dbs can operate faster. 
+In these databases we can set partition keys to improve query performance significantly in case we have to read some data from the database. 
+Also sharding of db allows distribution of data load across multiple machines. There would be almost 0 downtime of the cloud hosted databases, 
+which means our service will be able to handle multiple requests writing data to the database i.e. external dependencies won't be issue.
+
+3. We could also optimise the code itself to gain performance. For example we could use frameworks that show good benchmark. In Python
+we could opt for frameworks like FastAPI. Or we could design API to cache the data i.e. cache the external API requests etc.
+Also design API to handle parallel requests in code with help of production ready webserver (look at point 1) 
+But we could also go fully serverless using services like AWS Lambda and AWS API Gateway.
+You pay for what you use, you won't have to worry about managing clusters etc. Achieve guaranteed high SLAs with experienced engineer support.  
 
 
-C.
+C. 
