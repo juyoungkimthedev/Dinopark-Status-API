@@ -194,6 +194,8 @@ go to next point`
   
 4. Return safety status of the zone with information about dinosaur (species).  
 
+On a more technical side:
+
 After seeing the bigger picture and understanding the problem, I went on designing the endpoints and general architecture
 of the API system. I created an API contract using swagger file that outlines all the endpoints and how to use the API.
 Also thought about which database system I want to use for the API.
