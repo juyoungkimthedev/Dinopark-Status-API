@@ -31,4 +31,4 @@ app = DinoparkStatusApi.create_app(data_access_layer=mongo_dal)
 app.json_encoder = MongoJsonEncoder
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)  # TODO: remember to set debug=False before completing!
+    app.run(host='0.0.0.0', port=80, debug=False)
