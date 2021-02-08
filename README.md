@@ -165,6 +165,12 @@ Just in case you can't run test on your own machine, the screenshots are include
 
 ![Screenshot](example_screenshots/test_api_definition_1.png)
 
+-------
+
+**test_api_integration.py**
+
+![Screenshot](example_screenshots/test_api_integration_1.png)
+
 
 ------
 
