@@ -303,4 +303,10 @@ But we could also go fully serverless using services like AWS Lambda and AWS API
 You pay for what you use, you won't have to worry about managing clusters etc. Achieve guaranteed high SLAs with experienced engineer support.  
 
 
-C. 
+C. It is nice to try out GraphQL but if we haven't come across pain points of REST that GraphQL meant to address, then
+GraphQL won't significantly change the app's overall user experience for current implementation of the service. I think current REST design
+is concise and clear of what data the client is requiring and also the service doesn't need multiple useless endpoints also it's not 
+storing data into different databases. That being said, of course if the service has to grow with more methods and more data or perhaps redesign the API 
+endpoints to return exactly required data/information about dinosaur status, for example health, emotions, injuries whatever, these can be nested data,
+it maybe useful to use GraphQL and create smart endpoints that can query exactly the information wanted and interested. We would in this case
+probably gain performance increase by using GraphQL but for now REST can do as much as what GraphQL does for our service.
