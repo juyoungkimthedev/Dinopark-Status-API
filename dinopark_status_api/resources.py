@@ -7,7 +7,7 @@ API resource mapped to REST routes.
 import logging
 import requests
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.exceptions import BadRequest
 
 # Third-party imports
@@ -169,20 +169,62 @@ class StatusSafety(Resource):
         # Retrieve content of the logs
         content = resp.json()
 
-        # Retrieve maintenance performed date by filtering logs
-        maintenance_log = [entry for entry in content if entry["kind"] == "maintenance_performed"]
+        # Retrieve dinosaur information and create look up dictionary for information
+        dino_log = [i for i in content if i["kind"] == "dino_added"]
 
+        # Species look up e.g. {"1032": "Tyrannosaurus rex"}
+        dino_species = [{str(i["id"]): i["species"]} for i in dino_log]
+        _dino_species = {}
+        for i in dino_species:
+            for k, v in i.items():
+                _dino_species[k] = v
+
+        # Type look up e.g. {"1032": "carnivore"}
+        dino_type = [{str(i["id"]): i["herbivore"]} for i in dino_log]
+        _dino_type = {}
+        for i in dino_type:
+            for k, v in i.items():
+                if v is False:
+                    _dino_type[k] = "carnivore"
+                else:
+                    _dino_type[k] = "herbivore"
+
+        # Digestion time (in days) look up e.g. {"1032": 2}
+        dino_dt = [{str(i["id"]): i["digestion_period_in_hours"]} for i in dino_log]
+        _dino_dt = {}
+        for i in dino_dt:
+            for k, v in i.items():
+                _dino_dt[k] = int(v / 24)  # convert to days
+
+        # Removal of dinosaur with date e.g. {"1047": "2021-02-05T22:59:31.696Z"}
+        dino_rm_log = [i for i in content if i["kind"] == "dino_removed"]
+        dino_rm = [{str(i["dinosaur_id"]): i["time"]} for i in dino_rm_log]
+        _dino_rm = {}
+        for i in dino_rm:
+            for k, v in i.items():
+                _dino_rm[k] = v
+
+        # Feeding date of dinosaur e.g. {"1032": "2021-02-03T22:59:31.696Z"}
+        dino_fed_log = [i for i in content if i["kind"] == "dino_fed"]
+        dino_fed = [{str(i["dinosaur_id"]): i["time"]} for i in dino_fed_log]
+        _dino_fed = {}
+        for i in dino_fed:
+            for k, v in i.items():
+                _dino_fed[k] = v
+
+        # Retrieve location update information
+        dino_loc_update = [i for i in content if i["kind"] == "dino_location_updated"]
         # Check if zone exists in the logs
-        locations = [entry["location"] for entry in maintenance_log]
+        locations = [entry["location"] for entry in dino_loc_update]
         if zone not in locations:
             raise BadRequest(f"Zone: {zone} is not available from NUDLS logs currently.")
 
-        # Final response body of the API - zone will be a partition key inside document DB
-        result = {
-            "zone": zone,
-            "maintenance_required": maintenance_required,
-            "info": maintenance_status
-        }
+        # Filter entry by provided zone
+        filtered_item = [i for i in dino_loc_update if i["location"] == zone][0]
+
+        # Retrieve dinosaur id of the given dinosaur location updated zone
+        dino = str(filtered_item["dinosaur_id"])
+        result = self._safety_status_algorithm(filtered_item, zone, dino, _dino_species, _dino_type, _dino_dt, _dino_rm, _dino_fed)
 
         # Insert status result into MongoDB and return insert count
         insert_docs = self._collection.insert_many([result])
@@ -195,3 +237,75 @@ class StatusSafety(Resource):
         result.pop("_id")
 
         return make_response(jsonify(result))
+
+    def _safety_status_algorithm(self, zone_item, zone, dino_id, dino_species, dino_type, dino_digestion_time, dino_remove, dino_fed):
+        """
+        A Helper method to process logs using safety status algorithm.
+
+        :param zone_item: Dictionary of information of dino location update for a given zone.
+        :param zone: Given zone identifier.
+        :param dino_id: Dinosaur's unique ID.
+        :param dino_species: Species look up dictionary.
+        :param dino_type: Type look up dictionary.
+        :param dino_digestion_time: Digestion time look up dictionary.
+        :param dino_remove: Removal look up dictionary.
+        :param dino_fed: Fed time look up dictionary.
+        :return: Dictionary of safety status result.
+        """
+
+        # Check if dino is herbivore or carnivore
+        if dino_type[dino_id] == "herbivore":
+            result = {
+                "zone": zone,
+                "safety_status": 1,
+                "info": f"It is safe to enter. Currently {dino_species[dino_id]} ({dino_type[dino_id]}) is in the zone."
+            }
+            return result
+
+        # Now dino is carnivore. Check if dinosaur was removed.
+        if dino_id in dino_remove.keys():
+            removal_date = datetime.strptime(dino_remove[dino_id], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+            update_date = datetime.strptime(zone_item["time"], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+            if removal_date > update_date:
+                self._logger.info(f"{dino_id} was removed after its location was updated")
+                result = {
+                    "zone": zone,
+                    "safety_status": 1,
+                    "info": f"It is safe to enter. {dino_species[dino_id]} - ({dino_type[dino_id]}) was removed."
+                }
+                return result
+        else:
+            self._logger.info(f"{dino_id} was not removed.")
+
+        # Check if dinosaur was fed
+        if dino_id not in dino_fed.keys():
+            result = {
+                "zone": zone,
+                "safety_status": 0,
+                "info": f"{dino_id} - ({dino_type[dino_id]}) was not fed. It is not safe to enter."
+            }
+            return result
+
+        # If dino was fed, check if fed time + digestion time is bigger than today or not
+        else:
+            # Convert fed time to datetime object
+            fed_date = datetime.strptime(dino_fed[dino_id], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y-%m-%d")
+            fed_date = datetime.strptime(fed_date, "%Y-%m-%d")
+            today = datetime.strptime(time.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            # Sum of fed date and digestion time
+            sum_fed_digest_date = fed_date + timedelta(days=dino_digestion_time[dino_id])
+
+            if sum_fed_digest_date < today:
+                result = {
+                    "zone": zone,
+                    "safety_status": 0,
+                    "info": f"It is not safe to enter. Currently {dino_species[dino_id]} has finished digesting."
+                }
+                return result
+            elif sum_fed_digest_date >= today:
+                result = {
+                    "zone": zone,
+                    "safety_status": 1,
+                    "info": f"It is safe to enter. Currently {dino_species[dino_id]} is still digesting."
+                }
+                return result

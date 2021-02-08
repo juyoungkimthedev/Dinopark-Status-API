@@ -57,12 +57,62 @@ class TestDinoparkStatusApi(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response_json, {"status": {"code": 200, "info": "Welcome to Dino Park Status API!", "status": "SUCCESS"}})
 
-    def test_safety_status(self):
+    @patch("dinopark_status_api.resources.requests.get")
+    def test_safety_status(self, mock_get):
         """
         Test the safety status endpoint works.
         """
+        # Test NUDLS source data
+        source_data = [{'kind': 'dino_fed',
+                        'dinosaur_id': 1039,
+                        'park_id': 1,
+                        'time': '2021-02-06T22:59:31.696Z'},
+                       {'kind': 'dino_location_updated',
+                        'location': 'V16',
+                        'dinosaur_id': 1032,
+                        'park_id': 1,
+                        'time': '2021-02-05T22:59:31.696Z'},
+                       {'kind': 'dino_removed',
+                        'dinosaur_id': 1047,
+                        'park_id': 1,
+                        'time': '2021-02-05T22:59:31.696Z'},
+                       {'kind': 'maintenance_performed',
+                        'location': 'O4',
+                        'park_id': 1,
+                        'time': '2021-02-03T22:59:31.696Z'},
+                       {'kind': 'dino_fed',
+                        'dinosaur_id': 1032,
+                        'park_id': 1,
+                        'time': '2021-02-03T22:59:31.696Z'},
+                       {'kind': 'dino_location_updated',
+                        'location': 'B7',
+                        'dinosaur_id': 1032,
+                        'park_id': 1,
+                        'time': '2021-01-28T22:59:31.696Z'},
+                       {'kind': 'dino_added',
+                        'name': 'McGroggity',
+                        'species': 'Tyrannosaurus rex',
+                        'gender': 'male',
+                        'id': 1032,
+                        'digestion_period_in_hours': 48,
+                        'herbivore': False,
+                        'park_id': 1,
+                        'time': '2021-01-28T22:59:31.696Z'}]
+
+        expected_response = {
+            "zone": "V16",
+            "safety_status": 0,
+            "info": f"It is not safe to enter. Currently Tyrannosaurus rex has finished digesting."
+        }
+
         with self.app as client:
-            pass
+            args = "?zone=" + "V16"
+            # Mock response.json() return values
+            mock_get.return_value = Mock(status_code=200, json=lambda: source_data)
+            response = client.get('dinopark_status/' + API_VERSION + '/safety_status' + args)
+            response_json = response.get_json()
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response_json, expected_response)
 
     @patch("dinopark_status_api.resources.requests.get")
     def test_maintenance_status(self, mock_get):
