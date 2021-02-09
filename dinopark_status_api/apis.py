@@ -6,7 +6,7 @@ Main API package.
 import logging
 
 # Third-party imports
-from flask import Flask, jsonify
+from flask import Flask
 from flask_restful import Api
 
 # Local imports
@@ -24,6 +24,9 @@ class DinoparkStatusApi(Api):
         Error handler for the API transforms a raised exception into a Flask response,
         with the appropriate HTTP status code and body..
 
+        If no description attribute in the error class, means Python core
+        If there is a description attribute, means a HTTP exception
+
         We are overriding handle_error inside Api package to customize.
 
         :param e: The exception to handle
@@ -40,13 +43,15 @@ class DinoparkStatusApi(Api):
         error_message = f"{code} {message}"
         logging.getLogger(LOGGER).error(error_message)
 
-        return self.make_response(jsonify({
+        data = {
             "status": {
                 "code": code,
                 "info": message,
                 "status": "FAILURE"
             }
-        }))
+        }
+
+        return self.make_response(data, code)
 
     @staticmethod
     def create_app(data_access_layer):

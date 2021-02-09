@@ -165,7 +165,7 @@ class TestDinoparkStatusApi(unittest.TestCase):
         """
         # Test query args
         args = "?zone=" + "A1"
-        # Mock response and exception
+        # Mock response and exception. Mock side effect causes exceptions to be raised when it performs requests.get in the code.
         mock_get.side_effect = HTTPError
         response = self.app.get('dinopark_status/' + API_VERSION + '/maintenance_status' + args)
         self.assertEqual(response.status_code, 500)
